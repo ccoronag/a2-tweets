@@ -20,16 +20,25 @@ function parseTweets(runkeeper_tweets) {
 	//This line modifies the DOM, searching for the tag with the numberTweets ID and updating the text.
 	//It works correctly, your task is to update the text of the other tags in the HTML file!
 	document.getElementById('numberTweets').innerText = tweet_array.length;	
-	earliest_tweet = tweet_array.reduce((lowest, current) => {
-		return current.time < lowest.time ? current : lowest;
-	});
-	latest_tweet = tweet_array.reduce((highest, current) => {
-		return current.time > highest.time ? current : highest;
-	});
-	document.getElementById('firstDate').innerHTML = earliest_tweet.time.toLocaleDateString(undefined, options);
-	document.getElementById('lastDate').innerHTML = latest_tweet.time.toLocaleDateString(undefined, options);
+	var lowest = new Tweet("", "Fri Jan 1 06:58:57 +0000 2500");
+	var highest = new Tweet("", "Fri Jan 1 06:58:57 +0000 1999");
+	var completed_events_ct = 0;
+	for (i = 0; i < tweet_array.length; i++) {
+		var current = tweet_array[i];
+		lowest = current.time < lowest.time ? current : lowest;
+		highest = current.time > highest.time ? current : highest;
 
-	
+		// console.log(current.source);
+		if (current.source === "completed_event") {
+			completed_events_ct++;
+		}
+	}
+	document.getElementById('firstDate').innerHTML = lowest.time.toLocaleDateString(undefined, options);
+	document.getElementById('lastDate').innerHTML = highest.time.toLocaleDateString(undefined, options);
+
+	document.getElementsByClassName('completedEvents')[0].innerHTML = completed_events_ct;
+	document.getElementsByClassName('completedEventsPct')[0].innerHTML = math.format(completed_events_ct/tweet_array.length, {notation: 'fixed', precision: 2}) * 100 + "%";
+
 }
 
 //Wait for the DOM to load
