@@ -28,7 +28,14 @@ class Tweet {
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
         //TODO: identify whether the tweet is written
-        return false;
+        var normalized = this.text.toLowerCase();
+        var link_beginning = normalized.indexOf("https");
+        var removed_link = normalized.slice(0, link_beginning).trim();
+
+        if (removed_link.endsWith("with @runkeeper. check it out!")) {
+            return false;
+        }
+        return true;
     }
 
     get writtenText():string {

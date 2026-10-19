@@ -26,6 +26,7 @@ function parseTweets(runkeeper_tweets) {
 	var live_events_ct = 0;
 	var achievement_ct = 0;
 	var misc_ct = 0;
+	var written_completed_ct = 0;
 	for (i = 0; i < tweet_array.length; i++) {
 		var current = tweet_array[i];
 		lowest = current.time < lowest.time ? current : lowest;
@@ -34,6 +35,9 @@ function parseTweets(runkeeper_tweets) {
 		// console.log(current.source);
 		if (current.source === "completed_event") {
 			completed_events_ct++;
+			if (current.written) {
+				written_completed_ct++;
+			}
 		}
 		else if (current.source === "live_event") {
 			live_events_ct++;
@@ -50,6 +54,7 @@ function parseTweets(runkeeper_tweets) {
 	document.getElementById('lastDate').innerHTML = highest.time.toLocaleDateString(undefined, options);
 
 	document.getElementsByClassName('completedEvents')[0].innerHTML = completed_events_ct;
+	document.getElementsByClassName('completedEvents')[1].innerHTML = completed_events_ct;
 	document.getElementsByClassName('completedEventsPct')[0].innerHTML = math.format(
 		completed_events_ct/tweet_array.length, {notation: 'fixed', precision: 4}) * 100 + "%";
 
@@ -64,6 +69,9 @@ function parseTweets(runkeeper_tweets) {
 	document.getElementsByClassName('miscellaneous')[0].innerHTML = misc_ct;
 	document.getElementsByClassName('miscellaneousPct')[0].innerHTML = math.format(
 		misc_ct/tweet_array.length, {notation: 'fixed', precision: 4}) * 100 + "%";
+	
+	document.getElementsByClassName('written')[0].innerHTML = written_completed_ct;
+	document.getElementsByClassName('writtenPct')[0].innerHTML = math.format(written_completed_ct/completed_events_ct, {notation: 'fixed', precision:4}) * 100 + "%";
 
 }
 
