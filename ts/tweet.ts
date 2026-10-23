@@ -43,7 +43,10 @@ class Tweet {
             return "";
         }
         //TODO: parse the written text from the tweet
-        return "";
+        var written_text_beginning = this.text.indexOf(" - ") + 3;
+        var written_text_ending = this.text.indexOf("https");
+        var written_text = this.text.slice(written_text_beginning, written_text_ending);
+        return written_text;
     }
 
     get activityType():string {
@@ -51,7 +54,19 @@ class Tweet {
             return "unknown";
         }
         //TODO: parse the activity type from the text of the tweet
-        return "";
+        let activities_list:Array<string> = new Array(" run ", 
+            " walk ", " elliptical ", " bike ", " swim ", 
+            " row ", " mysports freestyle ", " mtn bike ", " hike ", 
+            " ski ", " chair ride ", " nordic walk ", " skate ", 
+            " snowboard ", " circuit workout ");
+        var normalized = this.text.toLowerCase();
+        var normalized = normalized.replace("runkeeper", "");
+        for (var i = 0; i < activities_list.length; i++) {
+            if (normalized.includes(activities_list[i])) {
+                return activities_list[i];
+            }
+        }
+        return "unknown";
     }
 
     get distance():number {
@@ -59,6 +74,16 @@ class Tweet {
             return 0;
         }
         //TODO: prase the distance from the text of the tweet
+        var normalized = this.text.toLowerCase();
+        var split_text = normalized.split(" ");
+        for (var i = 0; i < split_text.length; i++) {
+            if (split_text[i] === "km") {
+                return parseFloat(split_text[i - 1]) / 1.609;
+            }
+            else if (split_text[i] === "mi") {
+                return parseFloat(split_text[i - 1]);
+            }
+        }
         return 0;
     }
 
