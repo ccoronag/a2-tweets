@@ -87,6 +87,13 @@ class Tweet {
         return 0;
     }
 
+    get isWeekend():boolean {
+        if (this.time.getUTCDay() === 0 || this.time.getUTCDay() === 6) {
+            return true;
+        }
+        return false;
+    }
+
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
         return "<tr></tr>";

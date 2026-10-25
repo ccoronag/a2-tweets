@@ -8,15 +8,35 @@ function parseTweets(runkeeper_tweets) {
 	tweet_array = runkeeper_tweets.map(function(tweet) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
-
+	
 	var activities_map = new Map();
+	var distances_map = new Map();
+	var weekday_distance_total = 0;
+	var weekday_ct = 0;
+	var weekend_distance_total = 0;
+	var weekend_ct = 0;
+	
 	for (var i = 0; i < tweet_array.length; i++) {
 		var current_tweet = tweet_array[i];
+		if (current_tweet.distance === 0) {
+			continue;
+		}
+		
+		if (current_tweet.isWeekend) {
+			weekend_ct++;
+			weekend_distance_total += current_tweet.distance;
+		}
+		else {
+			weekday_ct++;
+			weekday_distance_total += current_tweet.distance;
+		}
 		if (activities_map.has(current_tweet.activityType)) {
 			activities_map.set(current_tweet.activityType, activities_map.get(current_tweet.activityType) + 1);
+			distances_map.set(current_tweet.activityType, distances_map.get(current_tweet.activityType) + current_tweet.distance);
 		}
 		else {
 			activities_map.set(current_tweet.activityType, 1);
+			distances_map.set(current_tweet.activityType, current_tweet.distance);
 		}
 		
 	}
@@ -43,10 +63,66 @@ function parseTweets(runkeeper_tweets) {
 		}
 	}
 
+	console.log(top_three_acts);
+	console.log(distances_map);
+
 	document.getElementById("numberActivities").innerHTML = activities_map.size;
 	document.getElementById("firstMost").innerHTML = top_three_acts.get('first')[0];
 	document.getElementById("secondMost").innerHTML = top_three_acts.get('second')[0];
 	document.getElementById("thirdMost").innerHTML = top_three_acts.get('third')[0];
+
+	var first_average_distance = distances_map.get(top_three_acts.get('first')[0]) / top_three_acts.get('first')[1];
+	// first_average_distance = first_average_distance.toFixed(2);
+	var second_average_distance = distances_map.get(top_three_acts.get('second')[0]) / top_three_acts.get('second')[1];
+	// second_average_distance = second_average_distance.toFixed(2);
+	var third_average_distance = distances_map.get(top_three_acts.get('third')[0]) / top_three_acts.get('third')[1];
+	// third_average_distance = third_average_distance.toFixed(2);
+	// console.log(first_average_distance);
+	// console.log(second_average_distance);
+	// console.log(third_average_distance);
+	top_three_acts.get('first').push(first_average_distance);
+	top_three_acts.get('second').push(second_average_distance);
+	top_three_acts.get('third').push(third_average_distance);
+	console.log(top_three_acts);
+	var longest_distance = Math.max(top_three_acts.get('first')[2], top_three_acts.get('second')[2], top_three_acts.get('third')[2]);
+	var longest_activity;
+	if (longest_distance == top_three_acts.get('first')[2]) {
+		longest_activity = top_three_acts.get('first')[0];
+	}
+	else if (longest_distance == top_three_acts.get('second')[2]) {
+		longest_activity = top_three_acts.get('second')[0];
+	}
+	else if (longest_distance == top_three_acts.get('third')[2]) {
+		longest_activity = top_three_acts.get('third')[0];
+	}
+
+	var shortest_distance = Math.min(top_three_acts.get('first')[2], top_three_acts.get('second')[2], top_three_acts.get('third')[2]);
+	var shortest_activity;
+	if (shortest_distance == top_three_acts.get('first')[2]) {
+		shortest_activity = top_three_acts.get('first')[0];
+	}
+	else if (shortest_distance == top_three_acts.get('second')[2]) {
+		shortest_activity = top_three_acts.get('second')[0];
+	}
+	else if (shortest_distance == top_three_acts.get('third')[2]) {
+		shortest_activity = top_three_acts.get('third')[0];
+	}
+
+	document.getElementById("longestActivityType").innerHTML = longest_activity;
+	document.getElementById("shortestActivityType").innerHTML = shortest_activity;
+
+	var day_of_the_week_averages = new Map();
+	day_of_the_week_averages.set('weekday', (weekday_distance_total/weekday_ct));
+	day_of_the_week_averages.set('weekend', (weekend_distance_total/weekend_ct));
+	console.log(day_of_the_week_averages);
+	var weekday_or_weekend_longer = Math.max(day_of_the_week_averages.get('weekday'), day_of_the_week_averages.get('weekend'));
+	if (weekday_or_weekend_longer == day_of_the_week_averages.get('weekday')) {
+		document.getElementById("weekdayOrWeekendLonger").innerHTML = "weekdays";
+	}
+	else {
+		document.getElementById("weekdayOrWeekendLonger").innerHTML = "weekends";
+	}
+	
 
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
 
