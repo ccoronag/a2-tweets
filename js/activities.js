@@ -142,7 +142,7 @@ function parseTweets(runkeeper_tweets) {
 	  "mark": "bar",
 	  "encoding": {
 		"x": {
-			"field": "Activity", "type": "nominal", "axis": {"labelAngle": 0}
+			"field": "Activity", "type": "nominal", "axis": {"labelAngle": -90}
 		},
 		"y": {
 			"field": "Count", "type": "quantitative"
@@ -162,35 +162,8 @@ function parseTweets(runkeeper_tweets) {
 			["5", "Fri"],
 			["6", "Sat"]
 		]);
-	
-	var distances_day_one = new Map([
-		["Mon", []],
-		["Tue", []],
-		["Wed", []],
-		["Thur", []],
-		["Fri", []],
-		["Sat", []],
-		["Sun", []]
-	]);
-	var distances_day_two = new Map([
-		["Mon", []],
-		["Tue", []],
-		["Wed", []],
-		["Thur", []],
-		["Fri", []],
-		["Sat", []],
-		["Sun", []]
-	]);
-	var distances_day_three = new Map([
-		["Mon", []],
-		["Tue", []],
-		["Wed", []],
-		["Thur", []],
-		["Fri", []],
-		["Sat", []],
-		["Sun", []]
-	]);
 	// console.log(days_enum);
+	var distance_per_day_json = [];
 	for (var i = 0; i < tweet_array.length; i++) {
 		var current_tweet = tweet_array[i];
 		if (current_tweet.distance === 0) {
@@ -199,48 +172,76 @@ function parseTweets(runkeeper_tweets) {
 		// console.log(current_tweet.time.getUTCDay().toString());
 		var current_tweet_day = current_tweet.time.getUTCDay().toString();
 		// console.log(days_enum.get(current_tweet_day));
-		if (current_tweet.activityType === top_three_acts.get('first')[0]) {
-			distances_day_one.get(
-				days_enum.get(current_tweet_day))
-				.push(current_tweet.distance);
-		}
-		else if (current_tweet.activityType === top_three_acts.get('second')[0]) {
-			distances_day_two.get(
-				days_enum.get(current_tweet_day))
-				.push(current_tweet.distance);
-		}
-		else if (current_tweet.activityType === top_three_acts.get('third')[0]) {
-			distances_day_three.get(
-				days_enum.get(current_tweet_day))
-				.push(current_tweet.distance);
+		if (current_tweet.activityType === top_three_acts.get('first')[0] || 
+		current_tweet.activityType === top_three_acts.get('second')[0] || 
+		current_tweet.activityType === top_three_acts.get('third')[0]) {
+			distance_per_day_json.push({
+				"Day": days_enum.get(current_tweet_day),
+				"Activity": current_tweet.activityType,
+				"Distance": current_tweet.distance
+			});
 		}
 	}
-	console.log(distances_day_one);
-	console.log(distances_day_two);
-	console.log(distances_day_three);
-	var distance_per_day_json = [];
+	// console.log(distances_day_one);
+	// console.log(distances_day_two);
+	// console.log(distances_day_three);
+	// console.log(distance_per_day_json);
+
 	distance_vis_spec = {
 	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 	  "description": "A graph of the number of Tweets containing each type of activity.",
 	  "data": {
-	    "values": activities_map_list
+	    "values": distance_per_day_json
 	  },
-	  "mark": "bar",
+	  "mark": "point",
 	  "encoding": {
 		"x": {
-			"field": "Activity", "type": "nominal", "axis": {"labelAngle": 0}
+			"field": "Day", "type": "nominal", "axis": {"labelAngle": -90}
 		},
 		"y": {
-			"field": "Count", "type": "quantitative"
-		}
+			"field": "Distance", "type": "quantitative"
+		},
+		"color": {"field": "Activity"}
 	  }
 	};
 	vegaEmbed('#distanceVis', distance_vis_spec, {actions:false});
 
+	document.getElementById("distanceVisAggregated").style.display = 'none';
+	distance_vis_aggregated_spec = {
+	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+	  "description": "A graph of the number of Tweets containing each type of activity.",
+	  "data": {
+	    "values": distance_per_day_json
+	  },
+	  "mark": "point",
+	  "encoding": {
+		"x": {
+			"field": "Day", "type": "nominal", "axis": {"labelAngle": -90}
+		},
+		"y": {
+			"aggregate": "mean", "field": "Distance", "type": "quantitative"
+		},
+		"color": {"field": "Activity"}
+	  }
+	};
+	vegaEmbed('#distanceVisAggregated', distance_vis_aggregated_spec, {actions:false});
+
 	var button = document.getElementById("aggregate");
-
+	var is_aggregates = false;
 	button.addEventListener('click', function(event) {
-
+		if (is_aggregates) {
+			button.innerText = "Show Means";
+			is_aggregates = !is_aggregates;
+			document.getElementById("distanceVisAggregated").style.display = 'none';
+			document.getElementById("distanceVis").style.display = 'block';
+		}
+		else {
+			button.innerText = "Show All Activities";
+			is_aggregates = !is_aggregates;
+			document.getElementById("distanceVisAggregated").style.display = 'block';
+			document.getElementById("distanceVis").style.display = 'none';
+		}
+		
 	})
 }
 
