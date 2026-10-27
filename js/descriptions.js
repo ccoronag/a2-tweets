@@ -35,11 +35,11 @@ function parseTweets(runkeeper_tweets) {
 			table.innerHTML = "";
 			return;
 		}
-		console.log(search_text);
+		// console.log(search_text);
 		for (var i = 0; i < searchable_tweets.length; i++) {
 			var current_search = searchable_tweets[i];
 			// console.log(current_tweet.writtenText)
-			if (current_search.writtenText.includes(search_text)) {
+			if (current_search.writtenText.toLowerCase().includes(search_text)) {
 				search_results.push(current_search);
 			}
 		}
@@ -62,22 +62,6 @@ function parseTweets(runkeeper_tweets) {
 
 function addEventHandlerForSearch() {
 	//TODO: Search the written tweets as text is entered into the search box, and add them to the table
-	// var search_bar = document.getElementById("textFilter");
-	// var search_results = [];
-	// search_bar.addEventListener('keypress', function() {
-	// 	var search_text = search_bar.value.trim();
-	// 	if (search_text === "") {
-	// 		search_results = [];
-	// 		return;
-	// 	}
-		
-	// 	for (var i = 0; i < searchable_tweets.length; i++) {
-	// 		current_tweet = searchable_tweets[i];
-	// 		if (current_tweet.text.includes(search_text)) {
-	// 			search_results.push();
-	// 		}
-	// 	}
-	// });
 }
 
 //Wait for the DOM to load

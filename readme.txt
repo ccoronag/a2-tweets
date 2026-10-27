@@ -12,7 +12,10 @@
 
 
 3. What online resources did you consult when completing this assignment? (list sites like StackOverflow or specific URLs for tutorials; describe queries to Generative AI or use of AI-based code completion)
+- https://vega.github.io/vega-lite/examples/bar_grouped.html
+- https://vega.github.io/vega-lite/examples/bar.html
 
+AI queries consisted of syntax help and confusing behaviors, such as innerHTML causing tremendous lag for part 3 when constantly modified, and the Map() data structure not working with vega-lite because the array needed to be filled with raw json text instead.
 
 
 4. What classmates or other individuals did you consult as part of this assignment? What did you discuss?
