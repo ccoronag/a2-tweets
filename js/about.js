@@ -56,22 +56,23 @@ function parseTweets(runkeeper_tweets) {
 	document.getElementsByClassName('completedEvents')[0].innerHTML = completed_events_ct;
 	document.getElementsByClassName('completedEvents')[1].innerHTML = completed_events_ct;
 	document.getElementsByClassName('completedEventsPct')[0].innerHTML = math.format(
-		completed_events_ct/tweet_array.length, {notation: 'fixed', precision: 4}) * 100 + "%";
+		((completed_events_ct/tweet_array.length) * 100), {notation: 'fixed', precision: 2}) + "%";
 
 	document.getElementsByClassName('liveEvents')[0].innerHTML = live_events_ct;
 	document.getElementsByClassName('liveEventsPct')[0].innerHTML = math.format(
-		live_events_ct/tweet_array.length, {notation: 'fixed', precision: 4}) * 100 + "%";
+		((live_events_ct/tweet_array.length) * 100), {notation: 'fixed', precision: 2}) + "%";
 
 	document.getElementsByClassName('achievements')[0].innerHTML = achievement_ct;
 	document.getElementsByClassName('achievementsPct')[0].innerHTML = math.format(
-		achievement_ct/tweet_array.length, {notation: 'fixed', precision: 4}) * 100 + "%";
+		((achievement_ct/tweet_array.length) * 100), {notation: 'fixed', precision: 2}) + "%";
 
 	document.getElementsByClassName('miscellaneous')[0].innerHTML = misc_ct;
 	document.getElementsByClassName('miscellaneousPct')[0].innerHTML = math.format(
-		misc_ct/tweet_array.length, {notation: 'fixed', precision: 4}) * 100 + "%";
+		((misc_ct/tweet_array.length) * 100), {notation: 'fixed', precision: 2}) + "%";
 	
 	document.getElementsByClassName('written')[0].innerHTML = written_completed_ct;
-	document.getElementsByClassName('writtenPct')[0].innerHTML = math.format(written_completed_ct/completed_events_ct, {notation: 'fixed', precision:4}) * 100 + "%";
+	document.getElementsByClassName('writtenPct')[0].innerHTML = math.format(
+		((written_completed_ct/completed_events_ct) * 100), {notation: 'fixed', precision:2}) + "%";
 
 }
 
